@@ -1,36 +1,26 @@
-# Docu Chantier
+# ISF Express — installation facile
 
-Application web mobile de génération de documents Word à partir de trames `.docx`.
+Cette version est volontairement entièrement à plat pour être téléversée facilement dans le dépôt GitHub `ghostbuilderDev/Doc-secu`.
 
-## Ce qui est inclus
+## Mise à jour sans supprimer les anciens fichiers
 
-- Les trames **ISF**, **CSF 2026** et **PPSPS** fournies, sans modification.
-- Une fiche dossier réutilisable (opération, période, entreprise, horaires, contacts…).
-- Un éditeur de toutes les zones surlignées de chaque trame, y compris les cases `X` et les pieds de page.
-- Une génération `.docx` locale qui conserve la mise en page, les tableaux, les images et les annexes Word.
-- L’ajout de nouvelles trames Word depuis le téléphone ou l’ordinateur.
-- Un mode PWA : une fois ouvert une première fois, l’application reste utilisable hors connexion.
+1. Décompresser `Docu_secu_ISF_Express_V1_UPLOAD_FACILE.zip`.
+2. Dans le dépôt GitHub, choisir `Add file` puis `Upload files`.
+3. Sélectionner ensemble tous les fichiers décompressés.
+4. Attendre la fin du téléversement puis choisir `Commit changes`.
 
-## Mise en ligne avec GitHub Pages
+GitHub remplacera automatiquement `index.html`, `app.js`, `styles.css`, `sw.js`, `README.md`, `TRAME_ISF.docx` et les autres fichiers portant le même nom.
 
-1. Créer un dépôt GitHub, par exemple `docu-chantier`.
-2. Déposer **le contenu** du dossier `app-documents` à la racine du dépôt.
-3. Dans GitHub : `Settings` → `Pages` → `Deploy from a branch` → sélectionner `main` et le dossier `/ (root)`.
-4. Ouvrir l’adresse GitHub Pages obtenue depuis Chrome ou Edge sur le téléphone, puis l’ajouter à l’écran d’accueil si besoin.
+Les anciens fichiers `TRAME_CSF_2026.docx`, `TRAME_PPSPS.docx`, `manifest.webmanifest` et `icône.svg` peuvent rester dans le dépôt : cette version de l’application ne les charge plus.
 
-Chaque mise à jour envoyée sur GitHub conserve le même lien. Pour récupérer une nouvelle version, fermer puis rouvrir l’application lorsqu’une connexion est disponible.
+Ne pas téléverser le ZIP directement. Il faut téléverser les fichiers qui se trouvent à l’intérieur.
 
-## Utilisation
+## Données enregistrées
 
-1. Ouvrir une trame dans **Documents**.
-2. Renseigner la **Fiche dossier**.
-3. Dans **Champs à remplir**, préremplir les zones reconnues puis vérifier les autres informations.
-4. Dans **Générer**, sélectionner la ou les trames et télécharger le fichier Word final.
+Les ISF et chantiers sont conservés dans le navigateur. Une mise à jour des fichiers GitHub ne supprime pas ces données. Ne pas utiliser l’option Chrome permettant d’effacer les données du site.
 
-Lorsque plusieurs trames sont générées en même temps, elles sont regroupées dans une archive `.zip` pour éviter les téléchargements bloqués par le téléphone.
+## Application
 
-Les données restent dans le navigateur de l’appareil : aucune donnée de chantier n’est transmise par l’application.
+Après le déploiement GitHub Pages :
 
-## Licence de la bibliothèque intégrée
-
-Le moteur ZIP `JSZip 3.10.1` est fourni localement dans `assets/jszip.min.js`. Sa licence est disponible dans `assets/JSZIP-LICENSE.md`.
+https://ghostbuilderdev.github.io/Doc-secu/

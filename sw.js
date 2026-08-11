@@ -1,19 +1,21 @@
-const CACHE_NAME = "docu-chantier-v3-isf-phases";
+const CACHE_NAME = "docu-secu-isf-express-v1";
 const APP_FILES = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
-  "./manifest.webmanifest",
+  "./storage.js",
+  "./docx-engine.js",
+  "./manifest.json",
   "./icon.svg",
+  "./icon-192.png",
+  "./icon-512.png",
   "./jszip.min.js",
   "./TRAME_ISF.docx",
-  "./TRAME_CSF_2026.docx",
-  "./TRAME_PPSPS.docx",
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_FILES)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_FILES)));
 });
 
 self.addEventListener("activate", (event) => {
@@ -22,6 +24,10 @@ self.addEventListener("activate", (event) => {
       .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
       .then(() => self.clients.claim()),
   );
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("fetch", (event) => {
@@ -38,7 +44,7 @@ async function networkFirst(request) {
     if (response && response.ok) cache.put(request, response.clone());
     return response;
   } catch {
-    const cached = await cache.match(request);
+    const cached = await cache.match(request, { ignoreSearch: true });
     if (cached) return cached;
     if (request.mode === "navigate") return cache.match("./index.html");
     return new Response("Hors connexion", { status: 503, statusText: "Offline" });
