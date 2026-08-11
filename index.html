@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#7d1f4e" />
+    <meta name="description" content="Générateur local de documents Word à partir de trames ISF, CSF et PPSPS." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icon.svg" />
+    <link rel="stylesheet" href="styles.css?v=3" />
+    <title>Docu Chantier</title>
+  </head>
+  <body>
+    <header class="app-header">
+      <a class="brand" href="#documents" aria-label="Docu Chantier — accueil">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>
+          <strong>Docu Chantier</strong>
+          <small>Générateur de documents</small>
+        </span>
+      </a>
+      <div class="header-actions">
+        <span id="offlineStatus" class="status-chip" title="Fonctionnement local">Local et hors connexion</span>
+        <button id="installButton" class="icon-button" type="button" title="Installer l’application" hidden>
+          <span aria-hidden="true">⇩</span><span class="sr-only">Installer l’application</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="navigation" aria-label="Navigation principale">
+        <button class="nav-link active" data-view="documents" type="button"><span aria-hidden="true">▣</span>Documents</button>
+        <button class="nav-link" data-view="dossier" type="button"><span aria-hidden="true">▤</span>Fiche dossier</button>
+        <button class="nav-link" data-view="champs" type="button"><span aria-hidden="true">✎</span>Préparer</button>
+        <button class="nav-link" data-view="export" type="button"><span aria-hidden="true">⇩</span>Générer</button>
+        <button class="nav-link" data-view="aide" type="button"><span aria-hidden="true">?</span>Mode d’emploi</button>
+      </aside>
+
+      <main class="content" id="mainContent">
+        <section class="view active" id="view-documents" data-view-panel="documents">
+          <div class="view-heading">
+            <div>
+              <p class="eyebrow">Bibliothèque</p>
+              <h1>Quel document veux-tu préparer&nbsp;?</h1>
+              <p>Pour l’ISF, l’application construit les tableaux de phases selon les voies et protections choisies. Les autres zones de la trame restent modifiables dans les réglages avancés.</p>
+            </div>
+            <button id="openImportButton" class="button secondary" type="button"><span aria-hidden="true">＋</span>Ajouter une trame</button>
+          </div>
+          <div id="templateGrid" class="template-grid" aria-live="polite"></div>
+          <section class="privacy-note" aria-label="Confidentialité">
+            <span aria-hidden="true">⌁</span>
+            <div><strong>Les informations restent sur ton appareil.</strong> Aucun contenu de chantier ni document généré n’est envoyé par cette application.</div>
+          </section>
+        </section>
+
+        <section class="view" id="view-dossier" data-view-panel="dossier" hidden>
+          <div class="view-heading compact">
+            <div>
+              <p class="eyebrow">Informations partagées</p>
+              <h1>Fiche dossier</h1>
+              <p>Enregistre ici les éléments que tu retrouves dans plusieurs documents. Tu pourras ensuite les lier ou les préremplir en un clic.</p>
+            </div>
+            <button id="saveDossierButton" class="button primary" type="button">Enregistrer la fiche</button>
+          </div>
+          <form id="dossierForm" class="form-card" novalidate>
+            <fieldset>
+              <legend>Références du chantier</legend>
+              <div class="form-grid">
+                <label>Référence CSF complète<input name="referenceCsf" autocomplete="off" placeholder="Ex. 194/022/2026" /></label>
+                <label>N° ISF<input name="numeroIsf" inputmode="numeric" autocomplete="off" placeholder="Ex. 200" /></label>
+                <label>Année<input name="annee" inputmode="numeric" autocomplete="off" placeholder="Ex. 2026" /></label>
+                <label>Référence PGC / indice<input name="referencePgc" autocomplete="off" placeholder="Ex. PGC indice 1" /></label>
+                <label>Opération<textarea name="operation" rows="2" placeholder="Intitulé de l’opération"></textarea></label>
+                <label>Ligne / lieu<textarea name="lieu" rows="2" placeholder="Ligne, gare, commune…"></textarea></label>
+                <label>Nature des travaux<textarea name="natureTravaux" rows="2" placeholder="Ex. RVB, renouvellement, travaux connexes…"></textarea></label>
+                <label>Base travaux<textarea name="baseTravaux" rows="2" placeholder="Base travaux principale"></textarea></label>
+                <label>Base arrière<textarea name="baseArriere" rows="2" placeholder="Base arrière ou base logistique"></textarea></label>
+                <label>Période d’intervention<textarea name="periode" rows="2" placeholder="Ex. Du 14/01/2026 au 29/03/2026"></textarea></label>
+                <label>Semaines concernées<input name="semaines" autocomplete="off" placeholder="Ex. S38 à S40" /></label>
+                <label>Entreprise<input name="entreprise" autocomplete="organization" placeholder="Entreprise intervenante" /></label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Organisation</legend>
+              <div class="form-grid">
+                <label>Lieu de rendez-vous<textarea name="lieuRdv" rows="2" placeholder="Adresse ou point de rendez-vous"></textarea></label>
+                <label>Horaires de jour<input name="horairesJour" autocomplete="off" placeholder="Ex. 08h00 – 17h00" /></label>
+                <label>Horaires de nuit<input name="horairesNuit" autocomplete="off" placeholder="Ex. 22h00 – 06h00" /></label>
+                <label>Effectif minimum<input name="effectifMin" inputmode="numeric" autocomplete="off" placeholder="Ex. 3" /></label>
+                <label>Effectif maximum<input name="effectifMax" inputmode="numeric" autocomplete="off" placeholder="Ex. 15" /></label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Contacts les plus fréquents</legend>
+              <div class="form-grid">
+                <label>MOE Tx — nom<input name="moeNom" autocomplete="name" /></label>
+                <label>MOE Tx — téléphone<input name="moeTelephone" inputmode="tel" autocomplete="tel" /></label>
+                <label>RSO — nom<input name="rsoNom" autocomplete="name" /></label>
+                <label>RSO — téléphone<input name="rsoTelephone" inputmode="tel" autocomplete="tel" /></label>
+                <label>ASP — nom<input name="aspNom" autocomplete="name" /></label>
+                <label>ASP — téléphone<input name="aspTelephone" inputmode="tel" autocomplete="tel" /></label>
+                <label>Référent entreprise — nom<input name="entrepriseNom" autocomplete="name" /></label>
+                <label>Référent entreprise — téléphone<input name="entrepriseTelephone" inputmode="tel" autocomplete="tel" /></label>
+              </div>
+            </fieldset>
+          </form>
+        </section>
+
+        <section class="view" id="view-champs" data-view-panel="champs" hidden>
+          <div class="view-heading compact">
+            <div>
+              <p class="eyebrow">Préparation guidée</p>
+              <h1>Préparer le document</h1>
+              <p id="fieldIntro">Choisis une trame pour voir les zones à vérifier.</p>
+            </div>
+            <div class="stack-actions">
+              <button id="autofillButton" class="button secondary" type="button" disabled>Préremplir depuis la fiche</button>
+              <button id="verifyVisibleButton" class="button ghost" type="button" disabled>Valider les visibles</button>
+            </div>
+          </div>
+
+          <section id="isfBuilder" class="isf-builder" hidden aria-live="polite"></section>
+
+          <details id="advancedFields" class="advanced-fields">
+            <summary><span>Réglages avancés</span><small>Zones jaunes restantes de la trame Word</small></summary>
+            <div class="toolbar card" aria-label="Filtrer les champs">
+              <label class="toolbar-select">Trame
+                <select id="fieldTemplateSelect" aria-label="Trame à modifier"></select>
+              </label>
+              <label class="toolbar-search">Rechercher
+                <input id="fieldSearch" type="search" placeholder="Texte, contexte, numéro de voie…" autocomplete="off" />
+              </label>
+              <label class="toolbar-select">Afficher
+                <select id="fieldFilter">
+                  <option value="priority">À remplir en priorité</option>
+                  <option value="all">Toutes les zones</option>
+                  <option value="review">À vérifier</option>
+                  <option value="changed">Modifiées</option>
+                  <option value="markers">Cases « X »</option>
+                  <option value="linked">Liées à la fiche dossier</option>
+                  <option value="footer">Pied de page</option>
+                </select>
+              </label>
+            </div>
+
+            <div id="fieldStats" class="field-stats" aria-live="polite"></div>
+            <div id="fieldList" class="field-list" aria-live="polite"></div>
+            <div id="fieldEmpty" class="empty-state" hidden>
+              <span aria-hidden="true">⌕</span>
+              <h2>Aucune zone ne correspond à ce filtre.</h2>
+              <p>Modifie la recherche ou affiche toutes les zones.</p>
+            </div>
+          </details>
+        </section>
+
+        <section class="view" id="view-export" data-view-panel="export" hidden>
+          <div class="view-heading compact">
+            <div>
+              <p class="eyebrow">Document Word final</p>
+              <h1>Générer les documents</h1>
+              <p>La mise en page, les images et les annexes de la trame sont conservées. Les tableaux de phases ISF sont adaptés automatiquement au chantier.</p>
+            </div>
+          </div>
+          <div class="export-layout">
+            <section class="card export-card">
+              <h2>Documents à produire</h2>
+              <div id="exportTemplateChoices" class="choice-list"></div>
+              <label class="switch-row"><input id="removeHighlights" type="checkbox" checked /><span class="switch" aria-hidden="true"></span><span><strong>Retirer les surlignages dans la version finale</strong><small>Les zones complétées restent visibles en texte normal.</small></span></label>
+              <label class="switch-row"><input id="exportOnlyChanged" type="checkbox" /><span class="switch" aria-hidden="true"></span><span><strong>Générer uniquement si au moins une zone est modifiée</strong><small>Évite de télécharger une copie inchangée par erreur.</small></span></label>
+              <button id="generateButton" class="button primary wide" type="button" disabled>Générer le document Word</button>
+            </section>
+            <aside class="card checklist-card">
+              <h2>Contrôle avant génération</h2>
+              <div id="exportSummary" class="export-summary"></div>
+              <p class="mini-note">Les zones surlignées sont présentées dans l’éditeur pour vérification. Tu peux générer un document à tout moment, mais l’application t’alertera s’il reste des zones non vérifiées.</p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view" id="view-aide" data-view-panel="aide" hidden>
+          <div class="view-heading compact">
+            <div>
+              <p class="eyebrow">Simple et sécurisé</p>
+              <h1>Comment l’utiliser</h1>
+              <p>Une même fiche dossier peut servir à une ISF, une CSF et aux prochaines trames.</p>
+            </div>
+          </div>
+          <ol class="steps card">
+            <li><span>1</span><div><strong>Choisis le document</strong><p>Ouvre une trame existante, ou ajoute une nouvelle trame Word comportant des zones surlignées.</p></div></li>
+            <li><span>2</span><div><strong>Complète la fiche dossier</strong><p>Renseigne les informations communes : opération, période, entreprise et contacts.</p></div></li>
+            <li><span>3</span><div><strong>Construis les phases ISF</strong><p>Ajoute une phase, les voies concernées et leurs protections. Pour les autres documents, vérifie simplement les zones proposées.</p></div></li>
+            <li><span>4</span><div><strong>Génère le Word</strong><p>Le fichier .docx s’enregistre sur le téléphone ; s’il est pris en charge, tu peux aussi le partager directement.</p></div></li>
+          </ol>
+          <section class="help-grid">
+            <article class="card"><h2>Ajouter d’autres trames</h2><p>Appuie sur « Ajouter une trame », sélectionne le fichier Word, puis donne-lui un nom. La trame est analysée localement et reste disponible sur ce téléphone.</p></article>
+            <article class="card"><h2>Mettre à jour l’application</h2><p>Avec GitHub Pages, le même lien est conservé. Après une mise à jour, ferme puis rouvre l’application pour récupérer la nouvelle version.</p></article>
+            <article class="card"><h2>À savoir</h2><p>Le générateur conserve les clauses et les annexes. Dans l’ISF, il remplace les anciens tableaux fixes Jour/Nuit par les phases que tu as configurées.</p></article>
+          </section>
+          <button id="clearLocalDataButton" class="text-button danger" type="button">Effacer les brouillons et les trames ajoutées sur cet appareil</button>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="importDialog" class="import-dialog">
+      <form method="dialog" id="importForm">
+        <button class="dialog-close" type="button" id="closeImportButton" aria-label="Fermer">×</button>
+        <p class="eyebrow">Nouvelle trame</p>
+        <h2>Ajouter un document Word</h2>
+        <p>Choisis une trame <strong>.docx</strong>. L’application repérera les zones surlignées à compléter.</p>
+        <label class="file-picker" for="templateFileInput"><span aria-hidden="true">⇧</span><strong>Choisir une trame Word</strong><small>Format .docx uniquement</small></label>
+        <input id="templateFileInput" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden />
+        <label>Nom de la trame<input id="templateNameInput" maxlength="80" placeholder="Ex. Consigne locale Montereau" /></label>
+        <p id="importMessage" class="form-message" role="status"></p>
+        <button id="importTemplateButton" class="button primary wide" type="button" disabled>Ajouter la trame</button>
+      </form>
+    </dialog>
+
+    <div id="confirmDialog" class="modal-backdrop" hidden>
+      <section class="confirm-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+        <h2 id="confirmTitle">Confirmation</h2>
+        <p id="confirmText"></p>
+        <div class="dialog-actions"><button id="confirmCancel" class="button secondary" type="button">Annuler</button><button id="confirmAction" class="button danger-button" type="button">Confirmer</button></div>
+      </section>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+
+    <script src="jszip.min.js?v=3"></script>
+    <script src="app.js?v=3"></script>
+  </body>
+</html>
